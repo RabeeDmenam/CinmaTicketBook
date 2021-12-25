@@ -85,43 +85,7 @@
 
     <section class="section-long">
         <div class="container">
-<?php
 
-            if($_SERVER['REQUEST_METHOD'] == "POST")
-            {
-                $errro=[];
-                $movie_id = $_POST['movie_id'];
-                $sql3 = "select * from movie where movie_id = $movie_id";
-
-                $movie3_op = mysqli_query($con, $sql3);
-                $movie_data1 = mysqli_fetch_assoc($movie3_op);
-
-                $cart_count = 1;
-                $user_id = $_SESSION['user']['id'];
-                $cart_id = $_POST['movie_id'];
-
-                if (count($errors) > 0) {
-
-                     $errors['error'];
-
-                } else {
-
-
-                    $sql = "insert into cart ( cart_count, moive_id, user_id) VALUES ('$cart_count','$movie_id',' $user_id')";
-                    $op  = mysqli_query($con,$sql);
-
-                    if($op){
-                        $message = "Raw Inserted";
-                    }else{
-                        $message = "Error Try Again";
-                    }
-
-                    $_SESSION['Message'] =  ["message" => $message];
-
-                }
-
-            }
-            ?>
 
             <div class="card-body">
                 <div class="table-responsive">
@@ -133,12 +97,10 @@
 
                             $movie_id = $_GET['movie_id'];
                             $sql2 = "select * from movie where movie_id = $movie_id";
-
                             $movie_op = mysqli_query($con, $sql2);
-
                             while($movie_data = mysqli_fetch_assoc($movie_op)){
                             ?>
-                            <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data">
+                            <form action="checkout.php" method="post" enctype="multipart/form-data">
 
                                 <div class="form-group">
                                     <label for="exampleInputName">cart_id</label>

@@ -74,9 +74,9 @@ function validate($input,$flag,$length = 6){
 function url($url){
     if ($_SESSION['user']['role_id']==1){
 
-        return   "https://".$_SERVER['HTTP_HOST']."/NIT/CINMA/admin/".$url;
+        return   "https://".$_SERVER['HTTP_HOST']."/NIT/CINMA/CinmaTicketBook/admin/".$url;
     }else{
-        return   "https://".$_SERVER['HTTP_HOST']."/NIT/CINMA/";
+        return   "https://".$_SERVER['HTTP_HOST']."/NIT/CINMA/CinmaTicketBook";
 
     }
 }

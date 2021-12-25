@@ -1,9 +1,42 @@
 <?php
 require './admin/helpers/dbConnection.php';
 require './admin/helpers/functions.php';
-//require './checkLogin.php';
-?>
+require './checkLogin.php';
 
+if(!empty($_POST["submit"])) {
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $errro = [];
+        $movie_id = $_POST['movie_id'];
+        $sql3 = "select * from movie where movie_id = $movie_id";
+        $movie3_op = mysqli_query($con, $sql3);
+        $movie_data1 = mysqli_fetch_assoc($movie3_op);
+        var_dump($movie_data1);
+        exit();
+        $cart_count = 1;
+        $user_id = $_SESSION['user']['id'];
+        $cart_id = $_POST['movie_id'];
+
+        if (count($errors) > 0) {
+
+            $errors['error'];
+
+        } else {
+            $sql = "insert into cart ( cart_count, moive_id, user_id) VALUES ('$cart_count','$movie_id',' $user_id')";
+            $op = mysqli_query($con, $sql);
+
+            if ($op) {
+                $message = "Raw Inserted";
+            } else {
+                $message = "Error Try Again";
+            }
+
+            $_SESSION['Message'] = ["message" => $message];
+
+        }
+
+    }
+}
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -85,79 +118,16 @@ require './admin/helpers/functions.php';
         </section>
         <section class="section-long">
             <div class="container">
-                <div class="section-pannel">
-                    <div class="grid row">
-                        <div class="col-md-10">
-                            <form autocomplete="off">
-                                <div class="row form-grid">
-                                    <div class="col-sm-6 col-lg-3">
-                                        <div class="input-view-flat input-group">
-                                            <select class="form-control" name="genre">
-                                                <option selected="true">genre</option>
-                                                <option>action</option>
-                                                <option>adventure</option>
-                                                <option>comedy</option>
-                                                <option>crime</option>
-                                                <option>detective</option>
-                                                <option>drama</option>
-                                                <option>fantasy</option>
-                                                <option>melodrama</option>
-                                                <option>romance</option>
-                                                <option>superhero</option>
-                                                <option>supernatural</option>
-                                                <option>thriller</option>
-                                                <option>sport</option>
-                                                <option>historical</option>
-                                                <option>horror</option>
-                                                <option>musical</option>
-                                                <option>sci-fi</option>
-                                                <option>war</option>
-                                                <option>western</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-lg-3">
-                                        <div class="input-view-flat date input-group" data-toggle="datetimepicker" data-target="#release-year-field">
-                                            <input class="datetimepicker-input form-control" id="release-year-field" name="releaseYear" type="text" placeholder="release year" data-target="#release-year-field" data-date-format="Y" />
-                                            <div class="input-group-append">
-                                                <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-lg-3">
-                                        <div class="input-view-flat input-group">
-                                            <select class="form-control" name="sortBy">
-                                                <option selected="true">sort by</option>
-                                                <option>name</option>
-                                                <option>release year</option>
-                                                <option>rating</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-2 my-md-auto d-flex">
-                            <span class="info-title d-md-none mr-3">Select view:</span>
-                            <ul class="ml-md-auto h5 list-inline">
-                                <li class="list-inline-item">
-                                    <a class="content-link transparent-link" href="movies-blocks.html"><i class="fas fa-th"></i></a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a class="content-link transparent-link active" href="movies-list.php"><i class="fas fa-th-list"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
 
                 <?php
                 $sql= 'select * from movie';
                 $movie_op = mysqli_query($con, $sql);
-                $movie_session= $_SESSION[$movie_op];
                 while($movie_data = mysqli_fetch_assoc($movie_op)){
                 ?>
+
+                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                 <article class="movie-line-entity">
+
                     <div class="entity-poster" data-role="hover-wrap">
                         <div class="embed-responsive embed-responsive-poster">
                             <img class="embed-responsive-item" src="./admin/movie/uploads/<?php echo $movie_data['image'];?>" alt="" />
@@ -204,31 +174,21 @@ require './admin/helpers/functions.php';
                                 <div class="showtime-item">
                                     <span class="disabled btn-time btn" aria-disabled="true">11 : 30</span>
                                 </div>
-
-
                             </div>
-
                         </div>
                         <div class="navbar-extra">
-                            <form method="post" action="checkout.php">
-                            <a class="btn-theme btn"  href='./checkout.php?movie_id=<?php echo $movie_data['movie_id']; ?>'><i class="fas fa-ticket-alt"></i>&nbsp;&nbsp;Buy Ticket</a>
-                       </form
+<!--                            href='./checkout.php?movie_id=--><?php //echo $movie_data['movie_id']; ?><!--'-->
+<!--                            <a class="btn-theme btn" type="submit" name="submit">    </i>&nbsp;&nbsp;Buy Ticket</a>-->
+                            <button class="btn-theme btn" type="submit" name="submit"> <i class="fas fa-ticket-alt"></i>add to cart</button>
                         </div>
+
                     </div>
                 </article>
-<?php
-                }?>
-                <div class="section-bottom">
-                    <div class="paginator">
-                        <a class="paginator-item" href="#"><i class="fas fa-chevron-left"></i></a>
-                        <a class="paginator-item" href="#">1</a>
-                        <span class="active paginator-item">2</span>
-                        <a class="paginator-item" href="#">3</a>
-                        <span class="paginator-item">...</span>
-                        <a class="paginator-item" href="#">10</a>
-                        <a class="paginator-item" href="#"><i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
+                    </form>
+               <?php
+                }
+                ?>
+
             </div>
         </section>
         <a class="scroll-top disabled" href="#"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
