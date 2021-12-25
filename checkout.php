@@ -82,25 +82,32 @@
         </nav>
     </div>
 </header>
+<?php
+$movie_id = $_GET['movie_id'];
+$sql2 = "select * from movie where movie_id = $movie_id";
+$movie_op = mysqli_query($con, $sql2);
+
+
+?>
 
     <section class="section-long">
         <div class="container">
-
-
             <div class="card-body">
                 <div class="table-responsive">
 
                     <div class="card-body">
                         <div class="container">
-
                             <?php
 
-                            $movie_id = $_GET['movie_id'];
-                            $sql2 = "select * from movie where movie_id = $movie_id";
-                            $movie_op = mysqli_query($con, $sql2);
+
                             while($movie_data = mysqli_fetch_assoc($movie_op)){
+
+                                //session_start();
+                                $_SESSION['movie_data']=$movie_data;
+
                             ?>
-                            <form action="checkout.php" method="post" enctype="multipart/form-data">
+
+                            <form ction="checkout.php?movie_id=<?php echo $movie_id; ?>" method="post" enctype="multipart/form-data">
 
                                 <div class="form-group">
                                     <label for="exampleInputName">cart_id</label>
@@ -128,7 +135,7 @@
                                     >
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" class="btn btn-primary">Add to Order</button>
                             </form>
 
                             <?php }?>
@@ -139,8 +146,46 @@
 
         </div>
     </section>
+<?php
 
 
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $cart_count = 1;
+        $cart_id = $_SESSION['movie_data']['movie_id'];
+        $moive_id = $_SESSION['movie_data']['movie_id'];
+        $user_id = $_SESSION['user']['id'];
+        $sql_cart = "insert into cart (cart_id,cart_count,moive_id,user_id)values('$cart_id','$cart_count','$moive_id','$user_id')";
+        $op_cart22 = mysqli_query($con, $sql_cart);
+        if ($op_cart22) {
+            $testcart1 = "insert into orders (order_id,user_id,movie_id,order_date)values('$cart_id','$user_id','$moive_id','$cart_count')";
+            if ($con->query($testcart1) === TRUE){
+                echo  "<h4 class='alert-heading'>"."Raw Inserted to order   "."</h4>";
+            }else{
+                echo  "<h4 class='alert-heading'>"."Error Try Again"."</h4>".mysqli_error($con);
+            }
+            $testcart2 = "DELETE FROM cart WHERE cart_id = $cart_id";
+            if ($con->query($testcart2) === TRUE){
+                echo  "<h4 class='alert-heading'>"."Raw deleted from cart  "."</h4>";
+            }else{
+                echo  "<h4 class='alert-heading'>"."Error Try Again"."</h4>".mysqli_error($con);
+            }
+
+         //   echo  "<h4 class='alert-heading'>"."Raw Inserted to order  "."</h4>";
+
+
+
+        } else {
+
+            echo  "<h4 class='alert-heading'>"."Error Try Again"."</h4>".mysqli_error($con);
+
+        }
+
+
+
+
+
+}
+?>
 <a class="scroll-top disabled" href="#"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
 <footer class="section-text-white footer footer-links bg-darken">
     <div class="footer-body container">

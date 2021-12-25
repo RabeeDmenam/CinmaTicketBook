@@ -3,40 +3,10 @@ require './admin/helpers/dbConnection.php';
 require './admin/helpers/functions.php';
 require './checkLogin.php';
 
-if(!empty($_POST["submit"])) {
-    if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        $errro = [];
-        $movie_id = $_POST['movie_id'];
-        $sql3 = "select * from movie where movie_id = $movie_id";
-        $movie3_op = mysqli_query($con, $sql3);
-        $movie_data1 = mysqli_fetch_assoc($movie3_op);
-        var_dump($movie_data1);
-        exit();
-        $cart_count = 1;
-        $user_id = $_SESSION['user']['id'];
-        $cart_id = $_POST['movie_id'];
-
-        if (count($errors) > 0) {
-
-            $errors['error'];
-
-        } else {
-            $sql = "insert into cart ( cart_count, moive_id, user_id) VALUES ('$cart_count','$movie_id',' $user_id')";
-            $op = mysqli_query($con, $sql);
-
-            if ($op) {
-                $message = "Raw Inserted";
-            } else {
-                $message = "Error Try Again";
-            }
-
-            $_SESSION['Message'] = ["message" => $message];
-
-        }
-
-    }
-}
 ?>
+
+
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -125,7 +95,7 @@ if(!empty($_POST["submit"])) {
                 while($movie_data = mysqli_fetch_assoc($movie_op)){
                 ?>
 
-                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
                 <article class="movie-line-entity">
 
                     <div class="entity-poster" data-role="hover-wrap">
@@ -172,25 +142,25 @@ if(!empty($_POST["submit"])) {
                         <div class="entity-showtime">
                             <div class="showtime-wrap">
                                 <div class="showtime-item">
-                                    <span class="disabled btn-time btn" aria-disabled="true">11 : 30</span>
+                                    <span class="disabled btn-time btn" aria-disabled="true"> <?php echo $movie_data['movie_start_date'];?></span>
                                 </div>
                             </div>
                         </div>
+
                         <div class="navbar-extra">
-<!--                            href='./checkout.php?movie_id=--><?php //echo $movie_data['movie_id']; ?><!--'-->
-<!--                            <a class="btn-theme btn" type="submit" name="submit">    </i>&nbsp;&nbsp;Buy Ticket</a>-->
-                            <button class="btn-theme btn" type="submit" name="submit"> <i class="fas fa-ticket-alt"></i>add to cart</button>
+                            <a  href='./checkout.php?movie_id=<?php echo $movie_data['movie_id']; ?>'  class="btn-theme btn" type="submit" name="submit"> <i class="fas fa-ticket-alt"></i>add to cart</a>
                         </div>
 
                     </div>
                 </article>
-                    </form>
+              </form>
                <?php
                 }
                 ?>
 
             </div>
         </section>
+
         <a class="scroll-top disabled" href="#"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
         <footer class="section-text-white footer footer-links bg-darken">
             <div class="footer-body container">
